@@ -10,8 +10,14 @@ public class PlayerMovement : MonoBehaviour
     public bool isGrounded;
     public float jumpForce = 10f;
 
+    private SFXManager sfxManager;
+    private BGMManager bgmManager;
+
+
+ 
+
     float dirX;
-    
+    private GameManager gameManager;
     
     //private Transform playerTransform;
     private Rigidbody2D rb;
@@ -29,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        
     }
 
     
@@ -81,18 +89,50 @@ public class PlayerMovement : MonoBehaviour
         
         rb.velocity = new Vector2 (horizontal * speed , rb.velocity.y);
         
+        //GameManager.Instance.vidas;
+        //Gloval.nivel = 1;
+      
+
     }
 
    
     void OnTriggerEnter2D(Collider2D other) 
     {
-        if(other.gameObject.tag == "Cinematica")
+        /*if(other.gameObject.tag == "Cinematica")
         {
             director.Play();
+        }*/
+        
+        if(other.gameObject.CompareTag("Star"))
+        {
+            gameManager.TengoEstrella(other.gameObject);
         }
+
+        /*if(other.gameObject.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+        }*/
+        
+        if(other.gameObject.layer == 6)
+        {
+            gameManager.BombExplode(other.gameObject);
+            //GameManager.Instance.RestarVidas();
+            StartCoroutine(GameObject.Find("Main Camera").GetComponent<CameraShake>().Shake(1f, 0.05f));
+            
+
+        }
+
+
+        /*if(GetComponent<Collider>().gameObject.CompareTag("Star"))
+        {
+            Debug.Log("Tengo estrella");
+            //llamamos a la funcion TengoMoneda del script GameManager
+            gameManager.TengoEstrella(GetComponent<Collider>().gameObject);
+            
+        }*/
+
         
     }
 
-    //gg
-
+    
 }
